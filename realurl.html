@@ -13,7 +13,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-
 <script type="text/x-red" data-template-name="realurl">
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -23,23 +22,25 @@
 
 <script type="text/x-red" data-help-name="realurl">
   <p>A function that <b>msg.payload</b> to convert a short URL to a real URL. Places the result back into the payload.</p>
+  <p><b>msg.timeout</b> is timeout value in milliseconds for request. Default: 15000 millisecounds.</p>
 </script>
 
 <script type="text/javascript">
-  RED.nodes.registerType('realurl', {
+  RED.nodes.registerType('realurl',{
     category: 'function',
     color: '#DEBD5C',
     defaults: {
-      name: { value: '' }
+        name: {value:''}
     },
-    inputs: 1,
-    outputs: 1,
+    inputs:1,
+    outputs:1,
     icon: 'arrow-in.png',
-    label: function () {
+    label: function() {
       return this.name || 'realurl';
     },
     labelStyle: function () {
       return this.name? 'node_label_italic' : '';
     }
   });
+
 </script>
