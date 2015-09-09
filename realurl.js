@@ -15,28 +15,37 @@
  **/
 
 module.exports = function (RED) {
-  "use strict";
-  var realurl = require('realurl');
 
-  function RealURLNode (n) {
+  function RealURLNode(n) {
     RED.nodes.createNode(this, n);
     var node = this;
+
+    var request = require('request');
+
     this.on('input', function (msg) {
-      if (typeof msg.payload === 'string') {
-        realurl.get(msg.payload, function (err, result) {
+      var timeoutval = msg.timeout || 15000;
+      request({
+        method: 'HEAD',
+        url: msg.payload,
+        followAllRedirects: true,
+        headers: { 'User-Agent': '-U Mozilla' },
+        timeout: timeoutval,
+        jar: true
+      },
+        function (err, response) {
           if (err) {
-            node.error(err.toString());
+            node.error(err, msg);
             node.status({ fill: 'red', shape: 'ring', text: 'failed' });
+            node.send(msg);
           } else {
-            msg.payload = result;
+            msg.payload = response.request.href;
             node.status({});
             node.send(msg);
           }
         });
-      } else {
-        node.error('msg.payload : the short URL is not defined as a string');
-      }
+
     });
   }
+
   RED.nodes.registerType('realurl', RealURLNode);
 }
